@@ -32,28 +32,23 @@ func (nf *NullFloat) Scan(value interface{}) error {
 		return nil
 	}
 
-	var res float64
-
 	switch t := value.(type) {
+	case float32:
+		nf.Float, nf.Valid = float64(t), true
+
+	case float64:
+		nf.Float, nf.Valid = t, true
 
 	case []byte:
-
 		f, err := strconv.ParseFloat(string(t), 64)
 		if err != nil {
 			return errors.New("type assertion []byte to float64 is failed")
 		}
-
-		res = f
-
-	case float64:
-		res = t
+		nf.Float, nf.Valid = f, true
 
 	default:
 		return errors.New("type assertion to float64 is failed")
-
 	}
-
-	nf.Float, nf.Valid = res, true
 
 	return nil
 }

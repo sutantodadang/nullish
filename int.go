@@ -32,37 +32,32 @@ func (ni *NullInt) Scan(value interface{}) error {
 		return nil
 	}
 
-	var res int
-
 	switch b := value.(type) {
-	case int8:
+	case int:
+		ni.Int, ni.Valid = b, true
 
-		res = int(b)
+	case int8:
+		ni.Int, ni.Valid = int(b), true
 
 	case int16:
-
-		res = int(b)
+		ni.Int, ni.Valid = int(b), true
 
 	case int32:
-
-		res = int(b)
+		ni.Int, ni.Valid = int(b), true
 
 	case int64:
-
-		res = int(b)
+		ni.Int, ni.Valid = int(b), true
 
 	case []byte:
-
 		a, err := strconv.Atoi(string(b))
 		if err != nil {
 			return errors.New("type assertion to int is failed")
 		}
+		ni.Int, ni.Valid = a, true
 
-		res = a
-
+	default:
+		return errors.New("type assertion to int is failed")
 	}
-
-	ni.Int, ni.Valid = res, true
 
 	return nil
 }

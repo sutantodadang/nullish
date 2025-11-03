@@ -31,26 +31,20 @@ func (nj *NullJSON) Scan(value interface{}) error {
 		return nil
 	}
 
-	var res []byte
-
 	switch t := value.(type) {
-
 	case string:
-		res = []byte(t)
+		nj.Json, nj.Valid = []byte(t), true
 
 	case []byte:
 		if len(t) == 0 {
-			res = NullType
+			nj.Json, nj.Valid = NullType, true
 		} else {
-			res = []byte(string(t))
+			nj.Json, nj.Valid = t, true
 		}
 
 	default:
 		return errors.New("invalid type json")
-
 	}
-
-	nj.Json, nj.Valid = res, true
 
 	return nil
 }

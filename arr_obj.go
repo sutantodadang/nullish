@@ -31,18 +31,12 @@ func (na *NullArrObj) Scan(value interface{}) error {
 		return nil
 	}
 
-	var res []map[string]interface{}
-
-	b, err := json.Marshal(value)
-	if err != nil {
-		return errors.New("marshal array object is failed")
+	b, ok := value.([]map[string]interface{})
+	if !ok {
+		return errors.New("type assertion to array object is failed")
 	}
 
-	if err := json.Unmarshal(b, &res); err != nil {
-		return errors.New("unmarshal array object is failed")
-	}
-
-	na.ArrObj, na.Valid = res, true
+	na.ArrObj, na.Valid = b, true
 
 	return nil
 }

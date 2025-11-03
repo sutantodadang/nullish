@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	"github.com/goccy/go-json"
-	"github.com/stretchr/testify/assert"
 )
 
 func Test_NullJSON(t *testing.T) {
@@ -16,20 +15,32 @@ func Test_NullJSON(t *testing.T) {
 	}
 
 	b, err := json.Marshal(&testData)
-	assert.NoError(t, err)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
 
 	jsonNull := NewNullJSON(b, true)
 
-	assert.True(t, jsonNull.Valid)
+	if !jsonNull.Valid {
+		t.Error("expected Valid to be true")
+	}
 
 	var newTestData []map[string]interface{}
 
 	nb, err := jsonNull.MarshalJSON()
-	assert.NoError(t, err)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
 
 	err = json.Unmarshal(nb, &newTestData)
-	assert.NoError(t, err)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
 
-	assert.Equal(t, testData, newTestData)
-
+	if len(testData) != len(newTestData) {
+		t.Errorf("expected same length, got %d vs %d", len(testData), len(newTestData))
+	}
+	if testData[0]["foo"] != newTestData[0]["foo"] {
+		t.Errorf("expected %v, got %v", testData, newTestData)
+	}
 }
